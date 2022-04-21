@@ -12,7 +12,7 @@ use "synchronal/related-files.nvim", { requires = { { 'nvim-telescope/telescope.
 ```
 
 ```lua
-require'telescope'.load_extension('related-files')
+require'telescope'.load_extension('related_files')
 ```
 
 ## Adding related files
@@ -31,5 +31,16 @@ Related files are added to a file as a code comment:
 ## Usage
 
 ```lua
+:Telescope related_files
+```
+
+## Development
+
+```shell
+nvim --cmd "set rtp+=$(pwd)" fixtures/first.sh
+```
+
+```vim
+:lua require("telescope").load_extension('related_files')
 :Telescope related_files
 ```
