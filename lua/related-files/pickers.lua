@@ -3,6 +3,7 @@
 local conf = require("telescope.config").values
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
+local previewers = require("telescope.previewers")
 local entry_maker = require("related-files.entry-maker")
 local related = require('related-files.related-files')
 
@@ -25,7 +26,7 @@ M.from_current_buffer = function(opts)
     selection_strategy = "reset",
     sorter = conf.generic_sorter(opts),
     border = {},
-    -- previewer = nil,
+    previewer = previewers.cat.new({}),
   }):find()
 end
 
