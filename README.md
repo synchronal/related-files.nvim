@@ -8,11 +8,16 @@ to jump between related files, as specified in code comments.
 Packer
 
 ```lua
-use "synchronal/related-files.nvim", { requires = { { 'nvim-telescope/telescope.nvim' } } }
+use { "synchronal/related-files.nvim", requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" } }
 ```
 
 ```lua
-require'telescope'.load_extension('related_files')
+local status_ok, telescope = pcall(require, "telescope")
+if status_ok then
+  telescope.load_extension('related_files')
+else
+  error("error loading related-files; telescope not found")
+end
 ```
 
 ## Adding related files
