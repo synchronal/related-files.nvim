@@ -1,53 +1,73 @@
+local conf = require("telescope.config").values
+local entry_display = require "telescope.pickers.entry_display"
 local utils = require "telescope.utils"
-local Path = require "plenary.path"
 
-local lookup_keys = {
-  ordinal = 1,
-  value = 1,
-  filename = 1,
-  cwd = 2,
-}
+local has_devicons, devicons = pcall(require, "nvim-web-devicons")
 
-local gen_from_related = function (opts)
+local get_devicon = function(filename)
+  if has_devicons then
+    local icon, icon_highlight = devicons.get_icon(filename, string.match(filename, "%a+$"), { default = true })
+    local icon_display = icon or " "
+
+    if conf.color_devicons then
+      return icon_display, icon_highlight
+    else
+      return icon_display, "TelescopeResultsFileIcon"
+    end
+  else
+    return " ", "TelescopeResultsFileIcon"
+  end
+end
+
+local gen_from_related = function(opts)
   opts = opts or {}
 
-  local cwd = vim.fn.expand(opts.cwd or vim.loop.cwd())
-  local disable_devicons = opts.disable_devicons
-  local mt_file_entry = {}
+  local display_items = {
+    { width = 3 }, -- devicon
+    { width = opts.name_width or 15 }, -- name
+    { remaining = true }, -- filename{:optional_lnum+col} OR content preview
+  }
 
-  mt_file_entry.cwd = cwd
-  mt_file_entry.display = function(entry)
-    local hl_group
-    local display = utils.transform_path(opts, entry.value)
-
-    display, hl_group = utils.transform_devicons(entry.value, display, disable_devicons)
-
-    if hl_group then
-      return display, { { { 1, 3 }, hl_group } }
-    else
-      return display
-    end
+  if opts.ignore_filename and opts.show_line then
+    table.insert(display_items, 2, { width = 6 })
   end
 
-  mt_file_entry.__index = function(t, k)
-    local raw = rawget(mt_file_entry, k)
-    if raw then
-      return raw
-    end
+  local displayer = entry_display.create {
+    separator = " ",
+    hl_chars = { ["["] = "TelescopeBorder", ["]"] = "TelescopeBorder" },
+    items = display_items,
+  }
 
-    if k == "path" then
-      local retpath = Path:new({ t.cwd, t.value }):absolute()
-      if not vim.loop.fs_access(retpath, "R", nil) then
-        retpath = t.value
-      end
-      return retpath
-    end
+  local make_display = function(entry)
+    local filename = utils.transform_path(opts, entry.filename)
+    local icon, icon_highlight = get_devicon(filename)
 
-    return rawget(t, rawget(lookup_keys, k))
+    local display_columns = {
+      { icon, icon_highlight, icon_highlight },
+      { entry.text:lower(), "TelescopeResultsClass", "TelescopeResultsClass" },
+      filename,
+    }
+
+    return displayer(display_columns)
   end
 
-  return function(line)
-    return setmetatable({ line }, mt_file_entry)
+  return function(entry)
+    local filename = entry.filename
+
+    return {
+      valid = true,
+
+      value = entry,
+      ordinal = entry.text,
+      display = make_display,
+
+      filename = filename,
+      lnum = entry.lnum,
+      col = entry.col,
+      start = entry.start,
+      finish = entry.finish,
+      text = entry.text
+    }
   end
 end
 

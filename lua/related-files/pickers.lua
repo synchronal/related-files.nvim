@@ -20,7 +20,6 @@ M.from_current_buffer = function(opts)
     prompt_title = "Related Files",
     finder = finders.new_table {
       results = results,
-      -- entry_maker = make_entry.gen_from_quickfix(opts)
       entry_maker = entry_maker.gen_from_related(opts)
     },
     selection_strategy = "reset",

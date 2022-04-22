@@ -2,9 +2,9 @@ local from_current_buffer = function(opts)
   local related_files = {}
 
   local lines = vim.api.nvim_buf_get_lines(opts.bufnr, 0, -1, false)
-  for index, line in ipairs(lines) do
+  for _index, line in ipairs(lines) do
     if string.match(line, " @related ") then
-      for name, path in string.gmatch(line, " @related %[(.+)%]%((.+)%)") do
+      for name, path in string.gmatch(line, " @related %[(.+)%]%(/?(.+)%)") do
         if name then
           local entry = {
             bufnr = opts.bufnr,
@@ -16,8 +16,8 @@ local from_current_buffer = function(opts)
             text = name,
             value = path,
           }
-          -- table.insert(related_files, entry)
-          table.insert(related_files, entry.filename)
+
+          table.insert(related_files, entry)
         end
       end
     end
