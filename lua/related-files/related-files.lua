@@ -3,7 +3,7 @@ local from_current_buffer = function(opts)
 
   local lines = vim.api.nvim_buf_get_lines(opts.bufnr, 0, -1, false)
   for _index, line in ipairs(lines) do
-    if string.match(line, " @related ") then
+    if string.match(line, " @related %[(.+)%]%(/?(.+)%)") then
       for name, path in string.gmatch(line, " @related %[(.+)%]%(/?(.+)%)") do
         if name then
           local entry = {
