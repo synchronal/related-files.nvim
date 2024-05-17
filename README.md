@@ -3,11 +3,19 @@
 An extension for [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 to jump between related files, as specified in code comments.
 
+## Compatibility
+
+| Version | Telescope Version |
+| ------- | ----------------- |
+| 0.1.0   | 0.1.6             |
+
+
 ## Installation
 
 Packer
 
 ```lua
+use { "nvim-telescope/telescope.nvim", tag = "0.1.6" }
 use { "synchronal/related-files.nvim", requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" } }
 ```
 
