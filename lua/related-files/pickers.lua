@@ -24,7 +24,7 @@ M.from_current_buffer = function(opts)
       entry_maker = entry_maker.gen_from_related(opts)
     },
     selection_strategy = "reset",
-    sorter = conf.generic_sorter(opts),
+    sorter = conf.file_sorter(opts),
     border = {},
     previewer = previewers.cat.new({}),
   }):find()
