@@ -7,7 +7,7 @@ to jump between related files, as specified in code comments.
 
 | Version | Telescope Version |
 | ------- | ----------------- |
-| 0.1.0   | 0.1.6             |
+| 0.1.0   | 0.1.8             |
 
 
 ## Installation
